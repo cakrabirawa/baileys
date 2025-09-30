@@ -1,16 +1,16 @@
 import 'dotenv/config'
 import express from "express"
 import WaService from './services/whatsapp/index'
-import { deleteOldTempRemoteFile } from './utils'
 import cors from "cors"
-import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs'
 import QRCode from 'qrcode'
-import { body, validationResult } from "express-validator"
-import { createLogger, format, transports } from 'winston'
 import dotenv from "dotenv"
 import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js'
 import { Attachment, ConnectionState } from './services/whatsapp/type'
 import { replaceHtmlEntities, timeout, renameFileAsync } from './utils'
+import { body, validationResult } from "express-validator"
+import { createLogger, format, transports } from 'winston'
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs'
+import { deleteOldTempRemoteFile } from './utils'
 import * as cron from 'node-cron';
 import * as fs from 'fs/promises'; // Use promises for async operations
 import * as path from 'path';
@@ -27,7 +27,8 @@ const { combine, timestamp, prettyPrint, colorize, errors, } = format
 const credBaseDir = 'wa-auth-creds'
 const qrCodeBasedir = './wa-bots/qr-codes'
 const DIRECTORY_TO_CLEAN = './tmp'; // Specify your target directory
-const SEVEN_DAYS_IN_MS = 1 * 24 * 60 * 60 * 1000; // One Day in milliseconds
+// const SEVEN_DAYS_IN_MS = 1 * 24 * 60 * 60 * 1000; // One Day in milliseconds
+const SEVEN_DAYS_IN_MS = 3 * 60 * 60 * 1000; // Umur file > 3 jam
 
 // type DestinationCallback = (error: Error | null, destination: string) => void
 // type FileNameCallback = (error: Error | null, filename: string) => void
@@ -451,7 +452,7 @@ const runExpressServer = async () => {
 		}
 	})	
 }
-const cronAutoCleanUpAttachment = cron.schedule('0 0 0 * * *', async () => { // Setiap tengah malam alias 24:00
+const cronAutoCleanUpAttachment = cron.schedule('0 0 */3 * * *', async () => { // Setiap 3 jam hapus file upload nya
 	console.log('Running file cleanup job...');
 	try {
 		const files = await fs.readdir(DIRECTORY_TO_CLEAN);
