@@ -19,7 +19,8 @@
     "dev": "npx nodemon -x",
     "build": "./node_modules/@vercel/ncc/dist/ncc/cli.js build -m -d",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build1": "npx tsc"
+    "build1": "npx tsc",
+    "start": "ts-node src/index.ts"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",

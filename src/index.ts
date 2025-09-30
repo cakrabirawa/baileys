@@ -19,7 +19,9 @@ dotenv.config()
 const PORT = process.env.PORT || 3934
 const app = express()
 const multer = require('multer')
-const upload = multer({ dest: 'tmp/' })
+const upload = multer({ 
+	dest: 'tmp/',	 
+})
 const compression = require('compression')
 const { combine, timestamp, prettyPrint, colorize, errors, } = format
 const credBaseDir = 'wa-auth-creds'
@@ -354,6 +356,22 @@ const runExpressServer = async () => {
 					return res.status(400).json({ status: 400, message: "number not exists" }).end()
 				}
 				res.status(500).json('failed send message').end()
+			}
+		})
+	})
+	app.post('/upload', upload.single('file'), async (req, res) => {
+		// @ts-ignore
+		const original_file_name = req.file.originalname.toString();
+		// @ts-ignore
+		const ext = original_file_name.split(".")[original_file_name.split(".").length - 1]
+		// @ts-ignore
+		const old_file = "./tmp/" + req.file.filename, new_file = "./tmp/" + req.file.filename + "." + ext 
+		await renameFileAsync(old_file, new_file).then(async () => {
+			try {
+				res.json({ status: 100, message: "upload success", filename: new_file }).end()
+			} catch (e) {
+				logger.info(e)
+				res.status(500).json({status: 500, message: "upload failed send message"}).end()
 			}
 		})
 	})
