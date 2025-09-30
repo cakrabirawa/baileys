@@ -1,0 +1,47 @@
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+  <img id="qr" src="<?php print site_url(); ?>img/img-qrcode-scanner.gif" class="img-responsive"
+    style="width: 600px;" />
+  <div id="divInfo">Client Id</div>
+</body>
+
+</html>
+<script>
+  $(function () {
+    const API_HOST = "http://api.gramediadigital.com:3934";
+    var settings = {
+      'cache': false,
+      "async": true,
+      "crossDomain": true,
+      "url": API_HOST + "/get-qrcode?cred_id=" + gf_generate_unique_id({
+        oLength: 10
+      }),
+      "method": "GET",
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+    $.ajax(settings).done(function (response) {
+      $("#qr").attr("src", response.qrbase64);
+      $("#divInfo").html(response.clientid);
+      //window.clientId = response.clientid;
+      // $.post("<?php print site_url(); ?>c_core_wa_qr_scanner/gf_transact/", {
+      //   clientId: response.clientid,
+      // }, function (r) {
+      //   console.log(r);
+      // });
+    });
+  })
+  function gf_generate_unique_id(options) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < (options.oLength !== undefined ? options.oLength : 5); i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  }
+</script>

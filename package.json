@@ -1,0 +1,64 @@
+{
+  "name": "expressjs-baileys",
+  "version": "1.0.0",
+  "description": "Expressjs-Baileys is an implementation of Baileys using express.js",
+  "keywords": [
+    "whatsapp",
+    "js-whatsapp",
+    "expressjs",
+    "nodejs",
+    "whatsapp-api",
+    "whatsapp-web",
+    "whatsapp-chat",
+    "whatsapp-group",
+    "automation",
+    "multi-device"
+  ],
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "npx nodemon -x",
+    "build": "./node_modules/@vercel/ncc/dist/ncc/cli.js build -m -d",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build1": "npx tsc"
+  },
+  "devDependencies": {
+    "@types/bull": "^4.10.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.24",
+    "@types/qrcode": "^1.5.5",
+    "@vercel/ncc": "^0.38.3",
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@netlify/functions": "^2.7.0",
+    "@types/multer": "^2.0.0",
+    "@whiskeysockets/baileys": "^6.7.18",
+    "axios": "^1.7.2",
+    "bull": "^4.12.2",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.0.1",
+    "libphonenumber-js": "^1.10.58",
+    "link-preview-js": "^3.0.5",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "pm2": "^6.0.8",
+    "qrcode": "^1.5.3",
+    "serverless-http": "^3.2.0",
+    "sharp": "^0.32.6",
+    "winston": "^3.13.0"
+  },
+  "homepage": "https://masbroweb.com",
+  "author": {
+    "name": "Daulay Reza",
+    "email": "daulayreza@gmail.com"
+  },
+  "license": "MIT"
+}
