@@ -375,6 +375,61 @@ const runExpressServer = async () => {
 			}
 		})
 	})
+	app.post('/send-media-message-after-upload', body('phone_number').notEmpty().escape(), body('message').escape(), body('file_name').notEmpty().escape(), async (req, res) => {
+		// @ts-ignore
+		const stateId = req.query.cred_id.toString()
+		const pNumber = req.body.phone_number
+		const file_name = req.body.file_name
+		const tmp = "tmp\\"
+		// @ts-ignore
+		if (!waServiceClass[stateId]) {
+			return res.status(400).json({ status: 400, message: "connection uninitialized" }).end()
+		}
+		const errors = validationResult(req)
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() })
+		}
+		const phoneNumber = isValidPhoneNumber(pNumber, 'ID') ? parsePhoneNumber(pNumber, 'ID') : null
+		if (phoneNumber) {
+			req.body.phone_number = phoneNumber.number.toString().replace("+", "")
+		} else {
+			return res.status(400).json({
+				errors: [
+					{
+						value: req.body.phone_number,
+						msg: 'Invalid phone number',
+						param: 'phone_number',
+						location: 'body'
+					}
+				]
+			}).end()
+		}
+		try {
+			await waServiceClass[stateId].checkConnection()
+			let message = ''
+			if (req.body.message) {
+				message = replaceHtmlEntities(req.body.message)
+			}
+			const media: Attachment = {
+				url: tmp + file_name,
+				name: tmp + file_name,
+				filesize: 0,
+				type: 'photo'
+			}
+			waServiceClass[stateId].sendMediaMessageUpload(req.body.phone_number, media, message)
+			res.json({ status: 100, message: "success" }).end()
+		} catch (e) {
+			logger.info(e)
+			if (e === 'waiting for connection') {
+				return res.status(400).json({ status: 400, message: "please wait a second" }).end()
+			} else if (e === 'no active connection found') {
+				return res.status(400).json({ status: 400, message: "please scan barcode" }).end()
+			} else if (e === 'number not exists') {
+				return res.status(400).json({ status: 400, message: "number not exists" }).end()
+			}
+			res.status(500).json('failed send message').end()
+		}
+	})	
 }
 const cronAutoCleanUpAttachment = cron.schedule('0 0 0 * * *', async () => { // Setiap tengah malam alias 24:00
 	console.log('Running file cleanup job...');
