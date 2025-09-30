@@ -29,6 +29,9 @@ const qrCodeBasedir = './wa-bots/qr-codes'
 const DIRECTORY_TO_CLEAN = './tmp'; // Specify your target directory
 const SEVEN_DAYS_IN_MS = 1 * 24 * 60 * 60 * 1000; // One Day in milliseconds
 
+// type DestinationCallback = (error: Error | null, destination: string) => void
+// type FileNameCallback = (error: Error | null, filename: string) => void
+
 const logger = createLogger({
 	format: combine(
 		errors({ stack: true }),
@@ -58,6 +61,23 @@ const initWaServer = (stateId: string): Promise<void> => {
 		resolve()
 	})
 }
+// const fileStorage = multer.diskStorage({
+// 	destination: (
+// 			request: Request,
+// 			file: Express.Multer.File,
+// 			callback: DestinationCallback
+// 	): void => {
+// 			// ...Do your stuff here.
+// 	},
+
+// 	filename: (
+// 			req: Request, 
+// 			file: Express.Multer.File, 
+// 			callback: FileNameCallback
+// 	): void => {
+// 			// ...Do your stuff here.
+// 	}
+// })
 const runExpressServer = async () => {
 	app.use(express.urlencoded({ extended: true })); // support encoded bodies
 	app.use(compression());
