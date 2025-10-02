@@ -19,8 +19,8 @@ dotenv.config()
 const PORT = process.env.PORT || 3934
 const app = express()
 const multer = require('multer')
-const upload = multer({ 
-	dest: 'tmp/',	 
+const upload = multer({
+	dest: 'tmp/',
 })
 const compression = require('compression')
 const { combine, timestamp, prettyPrint, colorize, errors, } = format
@@ -386,13 +386,14 @@ const runExpressServer = async () => {
 		// @ts-ignore
 		const ext = original_file_name.split(".")[original_file_name.split(".").length - 1]
 		// @ts-ignore
-		const old_file = "./tmp/" + req.file.filename, new_file = "./tmp/" + req.file.filename + "." + ext 
+		const old_file = "./tmp/" + req.file.filename, new_file = "./tmp/" + req.file.filename + "." + ext
 		await renameFileAsync(old_file, new_file).then(async () => {
 			try {
-				res.json({ status: 100, message: "upload success", filename: new_file }).end()
+				// @ts-ignore
+				res.json({ status: 100, message: "upload success", filename: req.file.filename + "." + ext }).end()
 			} catch (e) {
 				logger.info(e)
-				res.status(500).json({status: 500, message: "upload failed send message"}).end()
+				res.status(500).json({ status: 500, message: "upload failed send message" }).end()
 			}
 		})
 	})
@@ -401,7 +402,7 @@ const runExpressServer = async () => {
 		const stateId = req.query.cred_id.toString()
 		const pNumber = req.body.phone_number
 		const file_name = req.body.file_name
-		const tmp = "tmp\\"
+		const tmp = "./tmp/"
 		// @ts-ignore
 		if (!waServiceClass[stateId]) {
 			return res.status(400).json({ status: 400, message: "connection uninitialized" }).end()
@@ -450,7 +451,7 @@ const runExpressServer = async () => {
 			}
 			res.status(500).json('failed send message').end()
 		}
-	})	
+	})
 }
 const cronAutoCleanUpAttachment = cron.schedule('0 0 */3 * * *', async () => { // Setiap 3 jam hapus file upload nya
 	console.log('Running file cleanup job...');
